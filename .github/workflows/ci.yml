@@ -1,23 +1,27 @@
 name: CI Pipeline
 
-# 1. متى يعمل هذا الخط؟ (عند كل عملية Push للفرع main)
 on:
   push:
     branches:
       - main
 
-# 2. ما هي الوظائف (Jobs) التي سينفذها؟
 jobs:
-  build-and-test:
-    # سيقوم GitHub بتوفير خادم Ubuntu مؤقت لتنفيذ هذه الأوامر
+  build-and-push:
     runs-on: ubuntu-latest
 
-    # 3. الخطوات (Steps)
     steps:
-      # الخطوة الأولى: سحب كود المشروع من مستودعك إلى الخادم المؤقت
+      # 1. سحب الكود
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # الخطوة الثانية: محاولة بناء صورة دوكر للتأكد من سلامة الكود والـ Dockerfile
+      # 2. تسجيل الدخول إلى Docker Hub باستخدام الأسرار
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      # 3. بناء الصورة وتسميتها باسم حسابك
       - name: Build Docker Image
-        run: docker build -t portfolio-app-test .
+        run: docker build -t mansour1998/portfolio-app:latest .
+
+      # 4. رفع الصورة إلى Docker Hub
+      - name: Push Docker Image
+        run: docker push mansour1998/portfolio-app:latest
