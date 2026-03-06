@@ -1,0 +1,23 @@
+name: CI Pipeline
+
+# 1. متى يعمل هذا الخط؟ (عند كل عملية Push للفرع main)
+on:
+  push:
+    branches:
+      - main
+
+# 2. ما هي الوظائف (Jobs) التي سينفذها؟
+jobs:
+  build-and-test:
+    # سيقوم GitHub بتوفير خادم Ubuntu مؤقت لتنفيذ هذه الأوامر
+    runs-on: ubuntu-latest
+
+    # 3. الخطوات (Steps)
+    steps:
+      # الخطوة الأولى: سحب كود المشروع من مستودعك إلى الخادم المؤقت
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # الخطوة الثانية: محاولة بناء صورة دوكر للتأكد من سلامة الكود والـ Dockerfile
+      - name: Build Docker Image
+        run: docker build -t portfolio-app-test .
