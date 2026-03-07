@@ -5,7 +5,7 @@ app = Flask(__name__)
 @app.route('/')
 def home():
     return jsonify(
-        status="Success",
+            status="Failed",
         message="Hello Mansour! Your DevOps Pipeline is working perfectly.",
         version="1.0"
     )

@@ -10,18 +10,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. سحب الكود
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # 2. تسجيل الدخول إلى Docker Hub باستخدام الأسرار
+      # -- حارس البوابة: خطوة الاختبار الجديدة --
+      - name: Run Tests
+        run: |
+          docker build -t test-image .
+          docker run --rm test-image pytest
+      # ----------------------------------------
+
       - name: Login to Docker Hub
         run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-      # 3. بناء الصورة وتسميتها باسم حسابك
       - name: Build Docker Image
         run: docker build -t mansour1998/portfolio-app:latest .
 
-      # 4. رفع الصورة إلى Docker Hub
       - name: Push Docker Image
         run: docker push mansour1998/portfolio-app:latest
