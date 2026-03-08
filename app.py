@@ -1,15 +1,44 @@
+import os
 from flask import Flask, jsonify
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
+# إعداد رابط الاتصال بقاعدة البيانات
+# السحر هنا: نستخدم اسم الحاوية 'db' بدلاً من 'localhost'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://devops_user:devops_password@db:5432/portfolio_db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+
+# إنشاء جدول بسيط في قاعدة البيانات
+class Visit(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    message = db.Column(db.String(100), nullable=False)
+
+# دالة لإنشاء الجدول عند تشغيل التطبيق
+with app.app_context():
+    db.create_all()
+
 @app.route('/')
 def home():
-    return jsonify(
+    try:
+        # تسجيل زيارة جديدة في قاعدة البيانات
+        new_visit = Visit(message="Hello from PostgreSQL!")
+        db.session.add(new_visit)
+        db.session.commit()
+        
+        # معرفة عدد الزيارات الكلي
+        visit_count = Visit.query.count()
+        
+        return jsonify(
+            message="Hello Mansour! Your DevOps Pipeline is working perfectly.",
             status="Success",
-        message="Hello Mansour! Your DevOps Pipeline is working perfectly.",
-        version="1.0"
-    )
+            version="1.1",
+            total_visits=visit_count
+        )
+    except Exception as e:
+        return jsonify(status="Failed", error=str(e)), 500
 
 if __name__ == '__main__':
-    # التطبيق سيعمل على المنفذ 5000 ويستقبل الاتصالات من أي IP
     app.run(host='0.0.0.0', port=5000)

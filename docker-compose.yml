@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  web:
+    image: mansour1998/portfolio-app:latest
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db # ننتظر حتى تعمل قاعدة البيانات أولاً
+  # اسم الخدمة الأولى: قاعدة البيانات
+  db:
+    image: postgres:15-alpine
+    container_name: portfolio-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: devops_user
+      POSTGRES_PASSWORD: devops_password
+      POSTGRES_DB: portfolio_db
+    ports:
+      - "5432:5432"
+    # هنا يكمن السحر! نربط مجلد البيانات داخل الحاوية بالمجلد الآمن خارجها
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+# تعريف المساحة الآمنة (Volume) في خادم Ubuntu
+volumes:
+  pgdata:
