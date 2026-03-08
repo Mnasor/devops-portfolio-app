@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 # إعداد رابط الاتصال بقاعدة البيانات
 # السحر هنا: نستخدم اسم الحاوية 'db' بدلاً من 'localhost'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://devops_user:devops_password@db:5432/portfolio_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://devops_user:devops_password@db:5432/portfolio_db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)

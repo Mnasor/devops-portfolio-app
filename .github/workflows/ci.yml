@@ -17,8 +17,8 @@ jobs:
       - name: Run Tests
         run: |
           docker build -t test-image .
-          docker run --rm test-image pytest
-      # ----------------------------------------
+          docker run --rm -e DATABASE_URL="sqlite:///:memory:" test-image pytest
+        # ----------------------------------------
 
       - name: Login to Docker Hub
         run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
