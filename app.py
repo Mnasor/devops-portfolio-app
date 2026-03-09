@@ -1,9 +1,10 @@
 import os
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from prometheus_flask_exporter import PrometheusMetrics  # السطر الأول المضاف
 
 app = Flask(__name__)
-
+metrics = PrometheusMetrics(app) # السطر الثاني المضاف: تفعيل المراقبة فوراً!
 # إعداد رابط الاتصال بقاعدة البيانات
 # السحر هنا: نستخدم اسم الحاوية 'db' بدلاً من 'localhost'
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://devops_user:devops_password@db:5432/portfolio_db')
