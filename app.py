@@ -34,7 +34,7 @@ def home():
         return jsonify(
             message="Hello Mansour! Your DevOps Pipeline is working perfectly.",
             status="Success",
-            version="1.1",
+            version="2.0 - auto Deployed",
             total_visits=visit_count
         )
     except Exception as e:
